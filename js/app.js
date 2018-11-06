@@ -21,7 +21,7 @@ function createModal (el, dataResults) {
 
    modalWindow.className = 'modal-container';
    modalWindow.innerHTML = `<div class="modal">
-                                <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+                                <button type="button" id="modal-close-btn" class="modal-close-btn">X</button>
                                 <div class="modal-info-container">
                                     <img class="modal-img" src='${el.picture.large}' alt="profile picture">
                                     <h3 id="name" class="modal-name cap">${el.name.first} ${el.name.last}</h3>
@@ -43,7 +43,10 @@ function createModal (el, dataResults) {
    // event click to close modalWindow
 
    const modalCloseBtn = document.querySelector('#modal-close-btn');
-   modalCloseBtn.addEventListener('click', closeModalBtn);
+   const modalContainer = document.querySelector('.modal-container');
+   modalContainer.addEventListener('click', el => {
+      if (el.target === modalContainer || el.target === modalCloseBtn) closeModalBtn();
+   });
 
    // event click to slide modal window ahead
 
