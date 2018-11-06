@@ -90,10 +90,12 @@ header h1 {
     background: rgba(245, 245, 245, 0.9);
     border-radius: 0.25em;
     border: 1px solid rgba(50, 50, 50, 0.3);
-    transition: .4s ease-out;
+    transition: .2s ease-out;
     overflow: hidden;
 }
-
+.card:hover {
+	box-shadow: 5px 6px 12px rgba(0, 0, 0, .5);
+}
 .card-img {
     width: 95px;
     margin: 10px 15px auto 10px;

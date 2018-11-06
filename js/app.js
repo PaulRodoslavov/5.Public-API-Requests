@@ -1,63 +1,17 @@
-const searchContainer = document.querySelector('.search-container');
-const gallery =  document.querySelector('#gallery');
-fetchData('https://randomuser.me/api/?results=7')
+
+fetchData('https://randomuser.me/api/?results=12')
    .then(data => {
-      const dataResults = data.results;
-      // let olo = dataResults;
-
          createCards (data.results);
-         const arrCard = document.querySelectorAll('.card');
-         byClickCreateModal (dataResults);
-   // function to open modal window
-   function byClickCreateModal (dataResults) {
-      for (let i = 0; i < arrCard.length; i++) {
-         arrCard[i].addEventListener ('click', el => {
-            // console.log(arrCard[i])
-         createModal (data.results[i], dataResults);
-         });
-      }
-   }
-
-
-
-//////////////////---------------------------------------/
-
-searchContainer.innerHTML = `
-                              <form action="#" method="get">
-                                  <input type="search" id="search-input" class="search-input" placeholder="Search...">
-                                  <input type="submit" value="&#x1F50D;" id="serach-submit" class="search-submit">
-                              </form>
-                           `;
-
-   const serachSubmit = document.querySelector('.serach-submit');
-   const searchInput = document.querySelector('.search-input');
-   const arrName = [...document.querySelectorAll('#name')];
-   // const arrCard = document.querySelectorAll('.card');
-   searchInput.addEventListener('input', elInput => {
-
-
-      for (let i = 0; i < arrName.length; i++) {
-         if (!checkLetter(arrName[i], elInput)) {
-               arrCard[i].classList.add('hidden');
-               arrCard[i].classList.remove('view');
-         } else {
-            arrCard[i].classList.remove('hidden');
-            arrCard[i].classList.add('view');
-            console.log(dataResults[i]);
-         }
-      }
-   });
+         createSearch ();
+         byClickCreateModal (data.results);
+         filterByName ();
 });
-
-
-   // console.log(document.querySelectorAll('.card'));
 
 // ------------------------------------------
 //  FUNCTION TO CREATE MODAL WINDOW
 // ------------------------------------------
 
-// let index = 0;
-function createModal (el, dataResults, olo) {
+function createModal (el, dataResults) {
    const body = document.querySelector('body');
    const modalWindow = document.createElement('DIV');
 
@@ -66,7 +20,6 @@ function createModal (el, dataResults, olo) {
    }
 
    modalWindow.className = 'modal-container';
-
    modalWindow.innerHTML = `<div class="modal">
                                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                                 <div class="modal-info-container">
@@ -94,22 +47,9 @@ function createModal (el, dataResults, olo) {
 
    // event click to slide modal window ahead
 
-   i = dataResults.indexOf(el);
+   let i = dataResults.indexOf(el);
    const modalNext = document.querySelector('#modal-next');
    modalNext.addEventListener('click', () => {
-
-
-
-      //    // console.log(el);
-      //
-      //    const arrCard = [...document.querySelectorAll('.view')];
-      //    // console.log(i + ' index from fetch request');
-      //    const arrID = [];
-      //    arrCard.map(el => arrID.push(el.getAttribute('id')));
-      //    index++;
-
-      // console.log(arrID[index]);
-
       if (dataResults[i + 1]) createModal(dataResults[i + 1], dataResults);
       else createModal(dataResults[0], dataResults);
    });
@@ -123,14 +63,12 @@ function createModal (el, dataResults, olo) {
    });
 }
 
-
-
-
 // ------------------------------------------
 //  FUNCTION TO CREATE CARDS FOR EACH PERSON
 // ------------------------------------------
 
 function createCards (arr) {
+   const gallery =  document.querySelector('#gallery');
    for (let i = 0; i < arr.length; i++) {
       const domElements =  `<div class="card view" id='${i}'>
                                <div class="card-img-container">
@@ -144,35 +82,56 @@ function createCards (arr) {
                            </div>`;
       gallery.innerHTML += domElements;
    }
-
-   // arr.map(el => {
-   //    const domElements =  `<div class="card view">
-   //                             <div class="card-img-container">
-   //                                 <img class="card-img" src="${el.picture.large}" alt="profile picture">
-   //                             </div>
-   //                             <div class="card-info-container">
-   //                                 <h3 id="name" class="card-name cap">${el.name.first} ${el.name.last}</h3>
-   //                                 <p class="card-text">${el.email}</p>
-   //                                 <p class="card-text cap">${el.location.city}, ${el.location.state}</p>
-   //                             </div>
-   //                         </div>`;
-   //    gallery.innerHTML += domElements;
-   // });
 }
 
+// ------------------------------------------
+//  FUNCTION TO CREATE CARDS FOR EACH PERSON
+// ------------------------------------------
 
-
-
+function createSearch () {
+   const searchContainer = document.querySelector('.search-container');
+   searchContainer.innerHTML = `
+                                 <form action="#" method="get">
+                                     <input type="search" id="search-input" class="search-input" placeholder="Search...">
+                                     <input type="submit" value="&#x1F50D;" id="serach-submit" class="search-submit">
+                                 </form>
+                              `;
+}
 
 // ------------------------------------------
 //  EVENT LISTENERS
 // ------------------------------------------
 
+// function to open modal window
+function byClickCreateModal (dataResults) {
+   const arrCard = document.querySelectorAll('.card');
+   for (let i = 0; i < arrCard.length; i++) {
+      arrCard[i].addEventListener ('click', el => {
+      createModal (dataResults[i], dataResults);
+      });
+   }
+}
 
+// function ti filter people by name
+function filterByName () {
+   const arrCard = document.querySelectorAll('.card');
+   const searchInput = document.querySelector('.search-input');
+   const arrName = [...document.querySelectorAll('#name')];
+   searchInput.addEventListener('input', elInput => {
+      for (let i = 0; i < arrName.length; i++) {
+         if (!checkLetter(arrName[i], elInput)) {
+               arrCard[i].classList.add('hidden');
+         } else {
+            arrCard[i].classList.remove('hidden');
+         }
+      }
+   });
+}
 
 // ------------------------------------------
 //  FETCH FUNCTIONS
 // ------------------------------------------
+
 function fetchData(url) {
   return fetch(url)
            .then(checkStatus)
@@ -193,7 +152,6 @@ function checkStatus(response) {
 }
 
 function closeModalBtn () {
-   index = 0;
    const modalContainer = document.querySelector('.modal-container');
    modalContainer.remove();
 }
