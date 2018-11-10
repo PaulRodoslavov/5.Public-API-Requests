@@ -3,8 +3,9 @@ fetchData('https://randomuser.me/api/?results=12')
    .then(data => {
          createCards (data.results);
          createSearch ();
+         filterByName (data.results);
          byClickCreateModal (data.results);
-         filterByName ();
+
 });
 
 // ------------------------------------------
@@ -88,7 +89,24 @@ function createCards (arr) {
 }
 
 // ------------------------------------------
-//  FUNCTION TO CREATE CARDS FOR EACH PERSON
+//  FUNCTION TO CREATE CARDS FOR EACH PERSON AFTER FILTERING
+// ------------------------------------------
+
+function createCardsNew (el) {
+   const domElements =  `<div class="card view">
+                            <div class="card-img-container">
+                                <img class="card-img" src="${el.picture.large}" alt="profile picture">
+                            </div>
+                            <div class="card-info-container">
+                                <h3 id="name" class="card-name cap">${el.name.first} ${el.name.last}</h3>
+                                <p class="card-text">${el.email}</p>
+                                <p class="card-text cap">${el.location.city}, ${el.location.state}</p>
+                            </div>
+                        </div>`;
+      gallery.innerHTML += domElements;
+}
+// ------------------------------------------
+//  FUNCTION TO CREATE SEARCH FIELD
 // ------------------------------------------
 
 function createSearch () {
@@ -116,20 +134,25 @@ function byClickCreateModal (dataResults) {
 }
 
 // function ti filter people by name
-function filterByName () {
+function filterByName (data) {
    const arrCard = document.querySelectorAll('.card');
    const searchInput = document.querySelector('.search-input');
    const arrName = [...document.querySelectorAll('#name')];
    searchInput.addEventListener('input', elInput => {
-      for (let i = 0; i < arrName.length; i++) {
-         if (!checkLetter(arrName[i], elInput)) {
-               arrCard[i].classList.add('hidden');
-         } else {
-            arrCard[i].classList.remove('hidden');
+      const gallery =  document.querySelector('#gallery');
+      let dataArr = [];
+      gallery.innerHTML = '';
+      data.map(card => {
+         let name = card.name.first + card.name.last;
+         if(name.match(elInput.target.value)) {
+            createCardsNew (card);
+            dataArr.push(card);
          }
-      }
+      });
+      byClickCreateModal (dataArr);
    });
 }
+
 
 // ------------------------------------------
 //  FETCH FUNCTIONS
